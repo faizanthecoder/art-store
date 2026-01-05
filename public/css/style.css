@@ -107,6 +107,69 @@ button {
   transform: translateY(-2px);
 }
 
+/* PROFESSIONAL FOOTER */
+footer {
+  background-color: #3b2f2f;
+  color: #fff5f0;
+  padding: 50px 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+}
+
+footer h3 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+footer p, footer a {
+  color: #fff5f0;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+footer a:hover {
+  color: #f7e3d9;
+}
+
+footer .social-icons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+footer .social-icons a {
+  color: #fff5f0;
+  font-size: 1.2rem;
+  transition: color 0.2s;
+}
+
+footer .social-icons a:hover {
+  color: #f7e3d9;
+}
+
+footer .newsletter input {
+  padding: 10px;
+  border-radius: 6px;
+  border: none;
+  margin-right: 5px;
+  width: 60%;
+}
+
+footer .newsletter button {
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: none;
+  background-color: #5a3e2b;
+  color: white;
+  cursor: pointer;
+}
+
+footer .newsletter button:hover {
+  background-color: #3b2f2f;
+}
+
+
 /* --- CENTER TEXT --- */
 .center {
   text-align: center;
