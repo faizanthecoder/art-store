@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Art Store</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+/* Extra styles for products */
+.art img { height: 200px; object-fit: cover; }
+.cart-btn { margin-top: 10px; }
+</style>
+</head>
+<body>
+<nav class="navbar">
+  <div class="logo">My Art Gallery</div>
+  <div>
+    <a href="/">Home</a>
+    <a href="/cart.html">Cart (<span id="cart-count">0</span>)</a>
+  </div>
+</nav>
+
+<main class="container grid" id="products-container">
+  <!-- Products will load here -->
+</main>
+
+<script>
+// CART MANAGEMENT
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+function updateCartCount(){ document.getElementById("cart-count").textContent = cart.length; }
+updateCartCount();
+
+// LOAD PRODUCTS FROM SERVER
+async function loadProducts(){
+  const res = await fetch("/admin/products");
+  const products = await res.json();
+  const container = document.getElementById("products-container");
+  container.innerHTML = "";
+  products.forEach(p => {
+    container.innerHTML += `
+      <div class="art">
+        <img src="${p.image}" alt="${p.name}">
+        <h3>${p.name}</h3>
+        <p class="price">$${p.price}</p>
+        <button class="cart-btn" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+      </div>
+    `;
+  });
+}
+
+// ADD TO CART
+function addToCart(product){
+  cart.push(product);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCartCount();
+  alert(`${product.name} added to cart!`);
+}
+
+// INITIAL LOAD
+loadProducts();
+</script>
+</body>
+</html>

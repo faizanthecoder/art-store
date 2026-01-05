@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checkout - Art Store</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+<nav class="navbar">
+  <div class="logo">My Art Gallery</div>
+  <div>
+    <a href="/">Home</a>
+    <a href="/cart.html">Cart</a>
+  </div>
+</nav>
+
+<main class="container center">
+  <h1>Checkout</h1>
+  <form id="checkout-form">
+    <input type="text" id="name" placeholder="Full Name" required>
+    <input type="text" id="phone" placeholder="Phone Number" required>
+    <textarea id="address" placeholder="Shipping Address" required></textarea>
+    <button type="submit">Place Order</button>
+  </form>
+</main>
+
+<script>
+const form = document.getElementById("checkout-form");
+form.addEventListener("submit", async e=>{
+  e.preventDefault();
+  const name = document.getElementById("name").value;
+  const phone = document.getElementById("phone").value;
+  const address = document.getElementById("address").value;
+  const cart = localStorage.getItem("cart");
+  await fetch("/place-order", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ name, phone, address, cartData: cart })
+  });
+  localStorage.removeItem("cart");
+  window.location.href="/success";
+});
+</script>
+</body>
+</html>

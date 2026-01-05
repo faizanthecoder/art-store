@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="/css/style.css">
+<style>
+/* Small overrides for admin */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 30px;
+}
+th, td {
+  border: 1px solid #8b5e3c;
+  padding: 10px;
+  text-align: left;
+}
+th {
+  background-color: #5a3e2b;
+  color: white;
+}
+button {
+  padding: 6px 12px;
+  border-radius: 8px;
+  border: none;
+  background: #3b2f2f;
+  color: white;
+  cursor: pointer;
+}
+button:hover { opacity: 0.9; }
+h2 { margin-top: 40px; color: #3b2f2f; }
+</style>
+</head>
+<body>
+<main class="container">
+  <h1 class="center">Admin Dashboard</h1>
+
+  <!-- ADD PRODUCT FORM -->
+  <h2>Add New Product</h2>
+  <form id="add-product-form">
+    <input type="text" id="name" placeholder="Product Name" required>
+    <input type="number" id="price" placeholder="Price" required>
+    <input type="text" id="image" placeholder="Image URL" required>
+    <textarea id="description" placeholder="Description"></textarea>
+    <button type="submit">Add Product</button>
+  </form>
+
+  <!-- PRODUCTS LIST -->
+  <h2>Products</h2>
+  <table id="products-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Price</th>
+        <th>Image</th>
+        <th>Description</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <!-- ORDERS LIST -->
+  <h2>Orders</h2>
+  <table id="orders-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Phone</th>
+        <th>Address</th>
+        <th>Items</th>
+        <th>Status</th>
+        <th>Update Status</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</main>
+
+<script>
+const productForm = document.getElementById("add-product-form");
+const productsTableBody = document.querySelector("#products-table tbody");
+const ordersTableBody = document.querySelector("#orders-table tbody");
+
+// FETCH PRODUCTS FROM SERVER
+async function loadProducts() {
+  const res = await fetch("/admin/products");
+  const products = await res.json();
+  productsTableBody.innerHTML = "";
+  products.forEach(p => {
+    productsTableBody.innerHTML += `
+      <tr>
+        <td>${p.name}</td>
+        <td>${p.price}</td>
+        <td><img src="${p.image}" width="50"></td>
+        <td>${p.description || ""}</td>
+        <td><button onclick="editProduct('${p._id}')">Edit</button></td>
+        <td><button onclick="deleteProduct('${p._id}')">Delete</button></td>
+      </tr>
+    `;
+  });
+}
+
+// FETCH ORDERS FROM SERVER
+async function loadOrders() {
+  const res = await fetch("/admin/orders");
+  const orders = await res.json();
+  ordersTableBody.innerHTML = "";
+  orders.forEach(o => {
+    let items = o.items.map(i=> i.name + " $" + i.price).join(", ");
+    ordersTableBody.innerHTML += `
+      <tr>
+        <td>${o.name}</td>
+        <td>${o.phone}</td>
+        <td>${o.address}</td>
+        <td>${items}</td>
+        <td>${o.status}</td>
+        <td>
+          <select onchange="updateOrderStatus('${o._id}', this.value)">
+            <option value="Pending" ${o.status=="Pending"?"selected":""}>Pending</option>
+            <option value="Shipped" ${o.status=="Shipped"?"selected":""}>Shipped</option>
+          </select>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// ADD PRODUCT
+productForm.addEventListener("submit", async (e)=>{
+  e.preventDefault();
+  const name = document.getElementById("name").value;
+  const price = document.getElementById("price").value;
+  const image = document.getElementById("image").value;
+  const description = document.getElementById("description").value;
+  await fetch("/admin/products", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ name, price, image, description })
+  });
+  productForm.reset();
+  loadProducts();
+});
+
+// DELETE PRODUCT
+async function deleteProduct(id){
+  await fetch(`/admin/products/${id}/delete`, { method: "POST" });
+  loadProducts();
+}
+
+// EDIT PRODUCT
+function editProduct(id){
+  const row = [...productsTableBody.rows].find(r=> r.children[0].textContent && r.querySelector("button").onclick.toString().includes(id));
+  const name = row.children[0].textContent;
+  const price = row.children[1].textContent;
+  const image = row.children[2].querySelector("img").src;
+  const description = row.children[3].textContent;
+  document.getElementById("name").value = name;
+  document.getElementById("price").value = price;
+  document.getElementById("image").value = image;
+  document.getElementById("description").value = description;
+
+  // Delete old product first, then re-add after editing
+  deleteProduct(id);
+}
+
+// UPDATE ORDER STATUS
+async function updateOrderStatus(id, status){
+  await fetch(`/admin/orders/${id}/status`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({status})
+  });
+  loadOrders();
+}
+
+// INITIAL LOAD
+loadProducts();
+loadOrders();
+</script>
+</body>
+</html>
