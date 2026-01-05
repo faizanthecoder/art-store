@@ -3,25 +3,32 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Art Store</title>
+<title>My Art Gallery</title>
 <link rel="stylesheet" href="/css/style.css">
-<style>
-/* Extra styles for products */
-.art img { height: 200px; object-fit: cover; }
-.cart-btn { margin-top: 10px; }
-</style>
 </head>
 <body>
+
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">My Art Gallery</div>
   <div>
     <a href="/">Home</a>
+    <a href="/about.html">About</a>
+    <a href="/contact.html">Contact</a>
+    <a href="/privacy.html">Privacy</a>
     <a href="/cart.html">Cart (<span id="cart-count">0</span>)</a>
   </div>
 </nav>
 
+<!-- HERO SECTION -->
+<section class="container center" style="margin-top:30px;">
+  <h1>Welcome to My Art Gallery</h1>
+  <p>Explore our collection of exclusive artwork and add your favorite pieces to your cart.</p>
+</section>
+
+<!-- PRODUCTS GRID -->
 <main class="container grid" id="products-container">
-  <!-- Products will load here -->
+  <!-- Dummy items -->
 </main>
 
 <script>
@@ -30,34 +37,41 @@ let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 function updateCartCount(){ document.getElementById("cart-count").textContent = cart.length; }
 updateCartCount();
 
-// LOAD PRODUCTS FROM SERVER
-async function loadProducts(){
-  const res = await fetch("/admin/products");
-  const products = await res.json();
-  const container = document.getElementById("products-container");
-  container.innerHTML = "";
-  products.forEach(p => {
-    container.innerHTML += `
-      <div class="art">
-        <img src="${p.image}" alt="${p.name}">
-        <h3>${p.name}</h3>
-        <p class="price">$${p.price}</p>
-        <button class="cart-btn" onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
-      </div>
-    `;
-  });
-}
+// DUMMY ART ITEMS
+const products = [
+  {name:"Sunset Bliss", price:50, image:"https://picsum.photos/seed/1/300/200"},
+  {name:"Forest Walk", price:40, image:"https://picsum.photos/seed/2/300/200"},
+  {name:"Abstract Mood", price:60, image:"https://picsum.photos/seed/3/300/200"},
+  {name:"Ocean Waves", price:70, image:"https://picsum.photos/seed/4/300/200"},
+  {name:"City Lights", price:55, image:"https://picsum.photos/seed/5/300/200"},
+  {name:"Dreamscape", price:65, image:"https://picsum.photos/seed/6/300/200"},
+  {name:"Mountain High", price:45, image:"https://picsum.photos/seed/7/300/200"},
+  {name:"Golden Hour", price:80, image:"https://picsum.photos/seed/8/300/200"},
+  {name:"Winter Calm", price:50, image:"https://picsum.photos/seed/9/300/200"},
+  {name:"Autumn Leaves", price:55, image:"https://picsum.photos/seed/10/300/200"}
+];
 
-// ADD TO CART
+// RENDER PRODUCTS
+const container = document.getElementById("products-container");
+products.forEach(p => {
+  container.innerHTML += `
+    <div class="art">
+      <img src="${p.image}" alt="${p.name}">
+      <h3>${p.name}</h3>
+      <p class="price">$${p.price}</p>
+      <button onclick='addToCart(${JSON.stringify(p)})'>Add to Cart</button>
+    </div>
+  `;
+});
+
+// ADD TO CART FUNCTION
 function addToCart(product){
   cart.push(product);
   localStorage.setItem("cart", JSON.stringify(cart));
   updateCartCount();
   alert(`${product.name} added to cart!`);
 }
-
-// INITIAL LOAD
-loadProducts();
 </script>
+
 </body>
 </html>
