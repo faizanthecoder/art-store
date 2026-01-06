@@ -3,44 +3,220 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Checkout - Art Store</title>
+<title>Checkout - My Art Gallery</title>
 <link rel="stylesheet" href="/css/style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+.container {
+  max-width: 800px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+.checkout-items {
+  margin-bottom: 20px;
+}
+.checkout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff5f0;
+  padding: 12px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.checkout-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
+form input, form textarea {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+form button {
+  padding: 12px;
+  border:none;
+  border-radius:8px;
+  background-color:#5a3e2b;
+  color:white;
+  cursor:pointer;
+  width:100%;
+}
+form button:hover { background-color:#3b2f2f; }
+</style>
 </head>
 <body>
+
+<!-- NAVBAR -->
 <nav class="navbar">
   <div class="logo">My Art Gallery</div>
-  <div>
-    <a href="/">Home</a>
-    <a href="/cart.html">Cart</a>
-  </div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/contact.html">Contact</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="#" id="open-cart"><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+  </ul>
 </nav>
 
-<main class="container center">
+<!-- NOTIFICATION -->
+<div id="notify"></div>
+
+<!-- SIDEBAR CART -->
+<div id="cart-sidebar">
+  <span class="close-btn" id="close-cart">&times;</span>
+  <h2>Your Cart</h2>
+  <div id="cart-items"></div>
+  <h3>Total: $<span id="total">0</span></h3>
+  <a href="/checkout.html"><button style="width:100%; margin-top:10px;">Checkout</button></a>
+</div>
+
+<!-- MAIN CONTENT -->
+<main class="container">
   <h1>Checkout</h1>
+
+  <div class="checkout-items" id="checkout-items"></div>
+  <h3>Total Amount: $<span id="checkout-total">0</span></h3>
+
+  <h2>Shipping Details</h2>
   <form id="checkout-form">
-    <input type="text" id="name" placeholder="Full Name" required>
-    <input type="text" id="phone" placeholder="Phone Number" required>
-    <textarea id="address" placeholder="Shipping Address" required></textarea>
+    <input type="text" name="name" placeholder="Full Name" required>
+    <input type="text" name="address" placeholder="Address (Rawalpindi, Pakistan)" required>
+    <input type="text" name="phone" placeholder="Phone Number" required>
+    <textarea name="notes" placeholder="Additional Notes (optional)" rows="4"></textarea>
     <button type="submit">Place Order</button>
   </form>
 </main>
 
+<!-- PROFESSIONAL FOOTER -->
+<footer>
+  <div>
+    <h3>About My Art Gallery</h3>
+    <p>We are passionate about creating and selling unique artwork. Explore handcrafted paintings, abstracts, landscapes, and more.</p>
+  </div>
+
+  <div>
+    <h3>Quick Links</h3>
+    <ul style="list-style:none; padding-left:0;">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/privacy.html">Privacy</a></li>
+    </ul>
+  </div>
+
+  <div>
+    <h3>Contact</h3>
+    <p>Rawalpindi, Pakistan</p>
+    <p>Phone: +92 300 1234567</p>
+    <p>Email: info@myartgallery.com</p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+
+  <div>
+    <h3>Newsletter</h3>
+    <p>Subscribe for updates and promotions:</p>
+    <div class="newsletter">
+      <input type="email" placeholder="Your email">
+      <button>Subscribe</button>
+    </div>
+  </div>
+</footer>
+
 <script>
-const form = document.getElementById("checkout-form");
-form.addEventListener("submit", async e=>{
-  e.preventDefault();
-  const name = document.getElementById("name").value;
-  const phone = document.getElementById("phone").value;
-  const address = document.getElementById("address").value;
-  const cart = localStorage.getItem("cart");
-  await fetch("/place-order", {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ name, phone, address, cartData: cart })
+// CART AND CHECKOUT SCRIPT
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+
+const cartSidebar = document.getElementById("cart-sidebar");
+const notify = document.getElementById("notify");
+const cartCount = document.getElementById("cart-count");
+const cartItemsContainer = document.getElementById("cart-items");
+const totalEl = document.getElementById("total");
+const checkoutItems = document.getElementById("checkout-items");
+const checkoutTotal = document.getElementById("checkout-total");
+
+function updateCartCount(){ cartCount.textContent = cart.length; }
+
+function showNotification(message){
+  notify.textContent = message;
+  notify.style.display="block";
+  setTimeout(()=>{notify.style.display="none";},2000);
+}
+
+document.getElementById("open-cart").addEventListener("click",()=>{ cartSidebar.style.right="0"; renderCart(); });
+document.getElementById("close-cart").addEventListener("click",()=>{ cartSidebar.style.right="-400px"; });
+
+function renderCart(){
+  cartItemsContainer.innerHTML="";
+  let total=0;
+  cart.forEach((item,index)=>{
+    total+=item.price;
+    const div=document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML=`
+      <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
+      <span>${item.name} - $${item.price}</span>
+      <button>&times;</button>
+    `;
+    div.querySelector("button").addEventListener("click",()=>{
+      cart.splice(index,1);
+      localStorage.setItem("cart",JSON.stringify(cart));
+      renderCart();
+      renderCheckout();
+      updateCartCount();
+    });
+    cartItemsContainer.appendChild(div);
   });
-  localStorage.removeItem("cart");
-  window.location.href="/success";
+  totalEl.textContent=total.toFixed(2);
+}
+
+function renderCheckout(){
+  checkoutItems.innerHTML="";
+  let total=0;
+  cart.forEach(item=>{
+    total+=item.price;
+    const div=document.createElement("div");
+    div.classList.add("checkout-item");
+    div.innerHTML=`
+      <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
+      <span>${item.name} - $${item.price}</span>
+    `;
+    checkoutItems.appendChild(div);
+  });
+  checkoutTotal.textContent = total.toFixed(2);
+}
+
+// PLACE ORDER
+document.getElementById("checkout-form").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  if(cart.length===0){ showNotification("Cart is empty!"); return; }
+
+  // Dummy confirmation (replace with backend later)
+  const formData = new FormData(e.target);
+  const order = {
+    items: cart,
+    name: formData.get("name"),
+    address: formData.get("address"),
+    phone: formData.get("phone"),
+    notes: formData.get("notes"),
+    total: checkoutTotal.textContent
+  };
+  console.log("Order Placed:", order);
+  showNotification("Order placed successfully!");
+  cart=[];
+  localStorage.setItem("cart", JSON.stringify(cart));
+  renderCart();
+  renderCheckout();
+  e.target.reset();
 });
+
+updateCartCount();
+renderCart();
+renderCheckout();
 </script>
+
 </body>
 </html>
