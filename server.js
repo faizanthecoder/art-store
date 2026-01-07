@@ -20,7 +20,6 @@ mongoose.connect(process.env.MONGO_URI)
 // Routes
 app.use("/admin", adminRoutes);
 app.use("/api/orders", require("./routes/orderRoutes"));
-app.use(orderRoutes);
 
 // Public pages
 app.get("/", (req,res)=> res.sendFile(path.join(__dirname,"views/index.html")));

@@ -212,7 +212,7 @@ products.forEach(p=>{
     <button>Add to Cart</button>
   `;
   div.querySelector("button").addEventListener("click",()=>{
-    cart.push(p);
+    cart.push({...p, qty:1});
     localStorage.setItem("cart",JSON.stringify(cart));
     updateCartCount();
     showNotification(`${p.name} added to cart!`);
