@@ -7,19 +7,34 @@ const Order = require("../models/Order");
 const ADMIN = { username: "admin", password: "admin123" };
 
 // LOGIN PAGE
-router.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/../views/login.html");
-});
+// router.get("/login", (req, res) => {
+// res.sendFile(__dirname + "/../views/login.html");
+// });
 
 // LOGIN HANDLER
-router.post("/login", (req, res) => {
-  const { username, password } = req.body;
-  if (username === ADMIN.username && password === ADMIN.password) {
-    res.redirect("/admin/dashboard");
-  } else {
-    res.send("Invalid credentials");
-  }
+// router.post("/login", (req, res) => {
+//   const { username, password } = req.body;
+//   if (username === ADMIN.username && password === ADMIN.password) {
+//     res.redirect("/admin/dashboard");
+//   } else {
+//     res.send("Invalid credentials");
+//   }
+// });
+
+// GET orders for admin panel
+router.get("/orders", async (req, res) => {
+  const orders = await Order.find().sort({ createdAt: -1 });
+  res.json(orders);
 });
+
+// UPDATE order status
+router.post("/orders/:id/status", async (req, res) => {
+  const { status } = req.body;
+  await Order.findByIdAndUpdate(req.params.id, { status });
+  res.json({ success: true });
+});
+
+
 
 // DASHBOARD
 router.get("/dashboard", async (req, res) => {
