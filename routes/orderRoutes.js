@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const Order = require('../models/Order'); // ✅ match your export
 
-router.get('/api/orders', async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     const orders = await Order.find();
     res.json(orders);
