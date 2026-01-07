@@ -25,6 +25,7 @@ Thumbs.db
 # Optional: uploaded images (if you ever add local upload folder)
 public/uploads/
 views/admin.html
+public/admin.html
 public/css/admin.css
 public/js/admin.js
 
