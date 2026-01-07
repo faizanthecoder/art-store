@@ -7,6 +7,24 @@
 <link rel="stylesheet" href="/css/style.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #5a3e2b;
+  padding: 15px 30px;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.navbar .logo { font-size: 1.8rem; font-weight: bold; }
+.navbar ul { display: flex; list-style: none; }
+.navbar ul li { margin-left: 20px; }
+.navbar ul li a { color: white; font-weight: 500; transition: color 0.2s; }
+.navbar ul li a:hover { color: #f7e3d9; cursor: pointer; }
+
 /* Responsive Container */
 .checkout-container {
   max-width: 900px;
@@ -160,6 +178,8 @@
 
 /* Responsive Design */
 @media (max-width: 768px) {
+  .navbar ul { flex-direction: column; }
+  .navbar ul li { margin-left: 0; margin-top: 10px; }
   .checkout-container {
     margin: 10px;
     padding: 15px;
@@ -183,8 +203,29 @@
 </head>
 <body>
 
+<!-- NAVBAR -->
+<nav class="navbar">
+  <div class="logo">My Art Gallery</div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/contact.html">Contact</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="#" id="open-cart"><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+  </ul>
+</nav>
+
 <!-- NOTIFICATION -->
 <div id="notify"></div>
+
+<!-- SIDEBAR CART -->
+<div id="cart-sidebar">
+  <span class="close-btn" id="close-cart">&times;</span>
+  <h2>Your Cart</h2>
+  <div id="cart-items"></div>
+  <h3>Total: $<span id="total">0</span></h3>
+  <a href="/checkout.html"><button style="width:100%; margin-top:10px;">Checkout</button></a>
+</div>
 
 <!-- MAIN CONTENT -->
 <main class="checkout-container">
@@ -224,6 +265,45 @@
     </form>
   </section>
 </main>
+
+<!-- PROFESSIONAL FOOTER -->
+<footer>
+  <div>
+    <h3>About My Art Gallery</h3>
+    <p>We are passionate about creating and selling unique artwork. Explore handcrafted paintings, abstracts, landscapes, and more.</p>
+  </div>
+
+  <div>
+    <h3>Quick Links</h3>
+    <ul style="list-style:none; padding-left:0;">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/privacy.html">Privacy</a></li>
+    </ul>
+  </div>
+
+  <div>
+    <h3>Contact</h3>
+    <p>Rawalpindi, Pakistan</p>
+    <p>Phone: +92 300 1234567</p>
+    <p>Email: info@myartgallery.com</p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+
+  <div>
+    <h3>Newsletter</h3>
+    <p>Subscribe for updates and promotions:</p>
+    <div class="newsletter">
+      <input type="email" placeholder="Your email">
+      <button>Subscribe</button>
+    </div>
+  </div>
+</footer>
 
 <script>
 // CART AND CHECKOUT SCRIPT
