@@ -12,9 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// MongoDB Local
-mongoose.connect('mongodb://localhost:27017/art-store')
-  .then(()=> console.log("MongoDB Local connected ✅"))
+// MongoDB Atlas
+mongoose.connect(process.env.MONGO_URI)
+  .then(()=> console.log("MongoDB Atlas connected ✅"))
   .catch(err=> console.error(err));
 
 // Routes
