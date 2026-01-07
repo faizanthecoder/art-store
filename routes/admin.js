@@ -46,7 +46,7 @@ router.post("/orders/:id/status", async (req, res) => {
 
 // DASHBOARD
 router.get("/dashboard", async (req, res) => {
-  res.sendFile(__dirname + "/../views/admin.html");
+  res.sendFile(path.join(__dirname, "../public/admin.html"));
 });
 
 // GET ALL PRODUCTS (JSON)
