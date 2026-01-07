@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - My Art Gallery</title>
+<link rel="stylesheet" href="/css/style.css">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar">
+  <div class="logo">My Art Gallery</div>
+  <ul>
+    <li><a href="/">Home</a></li>
+    <li><a href="/about.html">About</a></li>
+    <li><a href="/contact.html">Contact</a></li>
+    <li><a href="/privacy.html">Privacy</a></li>
+    <li><a href="#" id="open-cart"><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
+  </ul>
+</nav>
+
+<!-- NOTIFICATION -->
+<div id="notify"></div>
+
+<!-- SIDEBAR CART -->
+<div id="cart-sidebar">
+  <span class="close-btn" id="close-cart">&times;</span>
+  <h2>Your Cart</h2>
+  <div id="cart-items"></div>
+  <h3>Total: $<span id="total">0</span></h3>
+  <a href="/checkout.html"><button style="width:100%; margin-top:10px;">Checkout</button></a>
+</div>
+
+<main class="container" style="margin-top:30px;">
+  <h1>About Us</h1>
+  <p>Welcome to My Art Gallery! We are passionate about creating and selling unique artwork for art lovers. Our collection includes paintings, abstract art, landscapes, and more. Every piece is handcrafted and curated with love.</p>
+  <p>Our goal is to bring art closer to people in Rawalpindi and across Pakistan, making it accessible and beautiful for homes and offices.</p>
+</main>
+
+<!-- PROFESSIONAL FOOTER -->
+<footer>
+  <div>
+    <h3>About My Art Gallery</h3>
+    <p>We are passionate about creating and selling unique artwork. Explore handcrafted paintings, abstracts, landscapes, and more.</p>
+  </div>
+
+  <div>
+    <h3>Quick Links</h3>
+    <ul style="list-style:none; padding-left:0;">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about.html">About</a></li>
+      <li><a href="/contact.html">Contact</a></li>
+      <li><a href="/privacy.html">Privacy</a></li>
+    </ul>
+  </div>
+
+  <div>
+    <h3>Contact</h3>
+    <p>Rawalpindi, Pakistan</p>
+    <p>Phone: +92 300 1234567</p>
+    <p>Email: info@myartgallery.com</p>
+    <div class="social-icons">
+      <a href="#"><i class="fab fa-facebook-f"></i></a>
+      <a href="#"><i class="fab fa-instagram"></i></a>
+      <a href="#"><i class="fab fa-twitter"></i></a>
+    </div>
+  </div>
+
+  <div>
+    <h3>Newsletter</h3>
+    <p>Subscribe for updates and promotions:</p>
+    <div class="newsletter">
+      <input type="email" placeholder="Your email">
+      <button>Subscribe</button>
+    </div>
+  </div>
+</footer>
+
+<script>
+// CART SIDEBAR + NOTIFICATION (Same as index.html)
+let cart = JSON.parse(localStorage.getItem("cart") || "[]");
+const cartSidebar = document.getElementById("cart-sidebar");
+const notify = document.getElementById("notify");
+const cartCount = document.getElementById("cart-count");
+const cartItemsContainer = document.getElementById("cart-items");
+const totalEl = document.getElementById("total");
+
+function updateCartCount(){ cartCount.textContent = cart.length; }
+
+function showNotification(message){
+  notify.textContent = message;
+  notify.style.display="block";
+  setTimeout(()=>{notify.style.display="none";},2000);
+}
+
+document.getElementById("open-cart").addEventListener("click",()=>{ cartSidebar.style.right="0"; renderCart(); });
+document.getElementById("close-cart").addEventListener("click",()=>{ cartSidebar.style.right="-400px"; });
+
+function renderCart(){
+  cartItemsContainer.innerHTML="";
+  let total=0;
+  cart.forEach((item,index)=>{
+    total+=item.price;
+    const div=document.createElement("div");
+    div.classList.add("cart-item");
+    div.innerHTML=`
+      <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
+      <span>${item.name} - $${item.price}</span>
+      <button>&times;</button>
+    `;
+    div.querySelector("button").addEventListener("click",()=>{
+      cart.splice(index,1);
+      localStorage.setItem("cart",JSON.stringify(cart));
+      renderCart();
+      updateCartCount();
+    });
+    cartItemsContainer.appendChild(div);
+  });
+  totalEl.textContent=total.toFixed(2);
+}
+updateCartCount();
+</script>
+
+</body>
+</html>
