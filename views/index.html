@@ -174,7 +174,7 @@ const cartCount = document.getElementById("cart-count");
 const cartItemsContainer = document.getElementById("cart-items");
 const totalEl = document.getElementById("total");
 
-function updateCartCount(){ cartCount.textContent = cart.length; }
+function updateCartCount(){ cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0); }
 function showNotification(message){
   notify.textContent = message;
   notify.style.display="block";
@@ -213,7 +213,12 @@ products.forEach(p=>{
     <button>Add to Cart</button>
   `;
   div.querySelector("button").addEventListener("click",()=>{
-    cart.push({...p, qty:1});
+    let existing = cart.find(item => item.name === p.name);
+    if (existing) {
+      existing.qty += 1;
+    } else {
+      cart.push({...p, qty:1});
+    }
     localStorage.setItem("cart",JSON.stringify(cart));
     updateCartCount();
     showNotification(`${p.name} added to cart!`);
@@ -226,12 +231,12 @@ function renderCart(){
   cartItemsContainer.innerHTML="";
   let total = 0;
   cart.forEach((item,index)=>{
-    total+=item.price;
+    total += item.price * item.qty;
     const div = document.createElement("div");
     div.classList.add("cart-item");
     div.innerHTML = `
       <img src="${item.image}" alt="${item.name}">
-      <span>${item.name} - $${item.price}</span>
+      <span>${item.name} x${item.qty} - $${item.price * item.qty}</span>
       <button>&times;</button>
     `;
     div.querySelector("button").addEventListener("click",()=>{

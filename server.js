@@ -39,14 +39,19 @@ app.post("/place-order", async (req,res)=>{
     const order = new Order({ customer:{name, phone, address}, items, total });
     await order.save();
 
-    // WhatsApp Notification
-    const itemList = items.map(i=> i.name + " x" + i.qty + " $" + i.price).join(", ");
-    const msg = `Hello ${name}, your order has been placed!\nItems: ${itemList}\nTotal: $${total}\nWe will contact you for delivery.`;
-    await client.messages.create({
-      from: process.env.TWILIO_WHATSAPP,
-      to: `whatsapp:+${phone}`,
-      body: msg
-    });
+    // WhatsApp Notification (optional)
+    try {
+      const itemList = items.map(i=> i.name + " x" + i.qty + " $" + i.price).join(", ");
+      const msg = `Hello ${name}, your order has been placed!\nItems: ${itemList}\nTotal: $${total}\nWe will contact you for delivery.`;
+      await client.messages.create({
+        from: process.env.TWILIO_WHATSAPP,
+        to: `whatsapp:+${phone}`,
+        body: msg
+      });
+    } catch (twilioErr) {
+      console.error('Twilio error:', twilioErr);
+      // Continue without failing the order
+    }
 
     res.redirect("/success");
   } catch (err) {

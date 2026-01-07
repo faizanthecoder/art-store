@@ -138,7 +138,7 @@ const totalEl = document.getElementById("total");
 const checkoutItems = document.getElementById("checkout-items");
 const checkoutTotal = document.getElementById("checkout-total");
 
-function updateCartCount(){ cartCount.textContent = cart.length; }
+function updateCartCount(){ cartCount.textContent = cart.reduce((sum, item) => sum + item.qty, 0); }
 
 function showNotification(message){
   notify.textContent = message;
@@ -153,12 +153,12 @@ function renderCart(){
   cartItemsContainer.innerHTML="";
   let total=0;
   cart.forEach((item,index)=>{
-    total+=item.price;
+    total += item.price * item.qty;
     const div=document.createElement("div");
     div.classList.add("cart-item");
     div.innerHTML=`
       <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
-      <span>${item.name} - $${item.price}</span>
+      <span>${item.name} x${item.qty} - $${item.price * item.qty}</span>
       <button>&times;</button>
     `;
     div.querySelector("button").addEventListener("click",()=>{
@@ -177,12 +177,12 @@ function renderCheckout(){
   checkoutItems.innerHTML="";
   let total=0;
   cart.forEach(item=>{
-    total+=item.price;
+    total += item.price * item.qty;
     const div=document.createElement("div");
     div.classList.add("checkout-item");
     div.innerHTML=`
       <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
-      <span>${item.name} - $${item.price}</span>
+      <span>${item.name} x${item.qty} - $${item.price * item.qty}</span>
     `;
     checkoutItems.appendChild(div);
   });
