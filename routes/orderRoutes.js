@@ -1,11 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const Order = require("../models/Order");
+const Order = require('../models/Order'); // ✅ match your export
 
-router.get("/", async (req, res) => {
-  const orders = await Order.find().sort({ createdAt: -1 });
-  res.json(orders);
+router.get('/api/orders', async (req, res) => {
+  try {
+    const orders = await Order.find();
+    res.json(orders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
-
 
 module.exports = router;

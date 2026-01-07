@@ -23,18 +23,26 @@ const ADMIN = { username: "admin", password: "admin123" };
 
 // GET orders for admin panel
 router.get("/orders", async (req, res) => {
-  const orders = await Order.find().sort({ createdAt: -1 });
-  res.json(orders);
+  try {
+    const orders = await Order.find().sort({ createdAt: -1 });
+    res.json(orders);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // UPDATE order status
 router.post("/orders/:id/status", async (req, res) => {
-  const { status } = req.body;
-  await Order.findByIdAndUpdate(req.params.id, { status });
-  res.json({ success: true });
+  try {
+    const { status } = req.body;
+    await Order.findByIdAndUpdate(req.params.id, { status });
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
-
-
 
 // DASHBOARD
 router.get("/dashboard", async (req, res) => {
@@ -43,35 +51,49 @@ router.get("/dashboard", async (req, res) => {
 
 // GET ALL PRODUCTS (JSON)
 router.get("/products", async (req, res) => {
-  const products = await Product.find();
-  res.json(products);
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // ADD PRODUCT
 router.post("/products", async (req, res) => {
-  const { name, price, image, description } = req.body;
-  const p = new Product({ name, price, image, description });
-  await p.save();
-  res.redirect("/admin/dashboard");
+  try {
+    const { name, price, image, description } = req.body;
+    const p = new Product({ name, price, image, description });
+    await p.save();
+    res.redirect("/admin/dashboard");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // UPDATE PRODUCT
 router.post("/products/:id", async (req, res) => {
-  const { name, price, image, description } = req.body;
-  await Product.findByIdAndUpdate(req.params.id, { name, price, image, description });
-  res.redirect("/admin/dashboard");
+  try {
+    const { name, price, image, description } = req.body;
+    await Product.findByIdAndUpdate(req.params.id, { name, price, image, description });
+    res.redirect("/admin/dashboard");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 // DELETE PRODUCT
 router.post("/products/:id/delete", async (req, res) => {
-  await Product.findByIdAndDelete(req.params.id);
-  res.redirect("/admin/dashboard");
-});
-
-// GET ORDERS
-router.get("/orders", async (req, res) => {
-  const orders = await Order.find();
-  res.json(orders);
+  try {
+    await Product.findByIdAndDelete(req.params.id);
+    res.redirect("/admin/dashboard");
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'Server error' });
+  }
 });
 
 module.exports = router;

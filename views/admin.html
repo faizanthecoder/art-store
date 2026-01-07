@@ -106,27 +106,32 @@ async function loadProducts() {
 
 // FETCH ORDERS FROM SERVER
 async function loadOrders() {
-  const res = await fetch("/admin/orders");
-  const orders = await res.json();
-  ordersTableBody.innerHTML = "";
-  orders.forEach(o => {
-    let items = o.items.map(i=> i.name + " $" + i.price).join(", ");
-    ordersTableBody.innerHTML += `
-      <tr>
-        <td>${o.name}</td>
-        <td>${o.phone}</td>
-        <td>${o.address}</td>
-        <td>${items}</td>
-        <td>${o.status}</td>
-        <td>
-          <select onchange="updateOrderStatus('${o._id}', this.value)">
-            <option value="Pending" ${o.status=="Pending"?"selected":""}>Pending</option>
-            <option value="Shipped" ${o.status=="Shipped"?"selected":""}>Shipped</option>
-          </select>
-        </td>
-      </tr>
-    `;
-  });
+  try {
+    const res = await fetch("/admin/orders");
+    const orders = await res.json();
+    ordersTableBody.innerHTML = "";
+    orders.forEach(o => {
+      let items = o.items.map(i=> i.name + " x" + i.qty + " $" + i.price).join(", ");
+      ordersTableBody.innerHTML += `
+        <tr>
+          <td>${o.customer.name}</td>
+          <td>${o.customer.phone}</td>
+          <td>${o.customer.address}</td>
+          <td>${items}</td>
+          <td>${o.status || 'Pending'}</td>
+          <td>
+            <select onchange="updateOrderStatus('${o._id}', this.value)">
+              <option value="Pending" ${o.status=="Pending"?"selected":""}>Pending</option>
+              <option value="Shipped" ${o.status=="Shipped"?"selected":""}>Shipped</option>
+              <option value="Delivered" ${o.status=="Delivered"?"selected":""}>Delivered</option>
+            </select>
+          </td>
+        </tr>
+      `;
+    });
+  } catch (err) {
+    console.error('Error loading orders:', err);
+  }
 }
 
 // ADD PRODUCT
