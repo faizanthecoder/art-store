@@ -7,182 +7,252 @@
 <link rel="stylesheet" href="/css/style.css">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 <style>
-.container {
-  max-width: 800px;
-  margin: 30px auto;
-  padding: 0 20px;
+/* Responsive Container */
+.checkout-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.checkout-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+.checkout-header h1 {
+  color: #5a3e2b;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+/* Order Summary */
+.order-summary {
+  background: #f9f5f0;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+}
+.order-summary h2 {
+  color: #5a3e2b;
+  margin-bottom: 15px;
+  font-size: 1.5rem;
 }
 .checkout-items {
-  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 .checkout-item {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #fff5f0;
-  padding: 12px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  background: #fff;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
 }
-.checkout-item img { width: 60px; height: 60px; object-fit: cover; border-radius: 6px; }
-form input, form textarea {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
+.checkout-item:hover {
+  transform: translateY(-2px);
+}
+.checkout-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
   border-radius: 6px;
-  border: 1px solid #ccc;
+  margin-right: 15px;
 }
-form button {
+.checkout-item-details {
+  flex: 1;
+}
+.checkout-item-details h3 {
+  margin: 0 0 5px 0;
+  font-size: 1.1rem;
+  color: #5a3e2b;
+}
+.checkout-item-details p {
+  margin: 0;
+  color: #666;
+  font-weight: bold;
+}
+.checkout-total {
+  text-align: right;
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #5a3e2b;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 2px solid #e0d5c8;
+}
+
+/* Shipping Form */
+.shipping-form {
+  background: #f9f5f0;
+  padding: 20px;
+  border-radius: 10px;
+}
+.shipping-form h2 {
+  color: #5a3e2b;
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
+.form-group {
+  margin-bottom: 20px;
+}
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #5a3e2b;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
   padding: 12px;
-  border:none;
-  border-radius:8px;
-  background-color:#5a3e2b;
-  color:white;
-  cursor:pointer;
-  width:100%;
+  border: 2px solid #e0d5c8;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s;
 }
-form button:hover { background-color:#3b2f2f; }
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #5a3e2b;
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+/* Submit Button */
+.submit-btn {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, #5a3e2b, #3b2f2f);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.submit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(90, 62, 43, 0.3);
+}
+
+/* Notification */
+#notify {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  background: #3b2f2f;
+  color: white;
+  padding: 15px 20px;
+  border-radius: 8px;
+  display: none;
+  z-index: 1000;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .checkout-container {
+    margin: 10px;
+    padding: 15px;
+  }
+  .checkout-header h1 {
+    font-size: 2rem;
+  }
+  .checkout-item {
+    flex-direction: column;
+    text-align: center;
+  }
+  .checkout-item img {
+    margin-right: 0;
+    margin-bottom: 10px;
+  }
+  .checkout-total {
+    text-align: center;
+  }
+}
 </style>
 </head>
 <body>
 
-<!-- NAVBAR -->
-<nav class="navbar">
-  <div class="logo">My Art Gallery</div>
-  <ul>
-    <li><a href="/">Home</a></li>
-    <li><a href="/about.html">About</a></li>
-    <li><a href="/contact.html">Contact</a></li>
-    <li><a href="/privacy.html">Privacy</a></li>
-    <li><a href="#" id="open-cart"><i class="fa fa-shopping-cart"></i> Cart (<span id="cart-count">0</span>)</a></li>
-  </ul>
-</nav>
-
 <!-- NOTIFICATION -->
 <div id="notify"></div>
 
-<!-- SIDEBAR CART -->
-<div id="cart-sidebar">
-  <!-- <span class="close-btn" id="close-cart">&times;</span> -->
-  <h2>Your Cart</h2>
-  <div id="cart-items"></div>
-  <h3>Total: $<span id="total">0</span></h3>
-  <a href="/checkout.html"><button style="width:100%; margin-top:10px;">Checkout</button></a>
-</div>
-
 <!-- MAIN CONTENT -->
-<main class="container">
-  <h1>Checkout</h1>
+<main class="checkout-container">
+  <div class="checkout-header">
+    <h1>Checkout</h1>
+    <p>Review your order and complete your purchase</p>
+  </div>
 
-  <div class="checkout-items" id="checkout-items"></div>
-  <h3>Total Amount: $<span id="checkout-total">0</span></h3>
+  <!-- ORDER SUMMARY -->
+  <section class="order-summary">
+    <h2>Order Summary</h2>
+    <div class="checkout-items" id="checkout-items"></div>
+    <div class="checkout-total">Total: $<span id="checkout-total">0</span></div>
+  </section>
 
-  <h2>Shipping Details</h2>
-  <form id="checkout-form">
-    <input type="text" name="name" placeholder="Full Name" required>
-    <input type="text" name="address" placeholder="Address (Rawalpindi, Pakistan)" required>
-    <input type="text" name="phone" placeholder="Phone Number" required>
-    <textarea name="notes" placeholder="Additional Notes (optional)" rows="4"></textarea>
-    <button type="submit">Place Order</button>
-  </form>
+  <!-- SHIPPING FORM -->
+  <section class="shipping-form">
+    <h2>Shipping Details</h2>
+    <form id="checkout-form">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+      </div>
+      <div class="form-group">
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address" placeholder="Enter your address (Rawalpindi, Pakistan)" required>
+      </div>
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+      </div>
+      <div class="form-group">
+        <label for="notes">Additional Notes (Optional)</label>
+        <textarea id="notes" name="notes" placeholder="Any special instructions or notes"></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Place Order</button>
+    </form>
+  </section>
 </main>
-
-<!-- PROFESSIONAL FOOTER -->
-<footer>
-  <div>
-    <h3>About My Art Gallery</h3>
-    <p>We are passionate about creating and selling unique artwork. Explore handcrafted paintings, abstracts, landscapes, and more.</p>
-  </div>
-
-  <div>
-    <h3>Quick Links</h3>
-    <ul style="list-style:none; padding-left:0;">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about.html">About</a></li>
-      <li><a href="/contact.html">Contact</a></li>
-      <li><a href="/privacy.html">Privacy</a></li>
-    </ul>
-  </div>
-
-  <div>
-    <h3>Contact</h3>
-    <p>Rawalpindi, Pakistan</p>
-    <p>Phone: +92 300 1234567</p>
-    <p>Email: info@myartgallery.com</p>
-    <div class="social-icons">
-      <a href="#"><i class="fab fa-facebook-f"></i></a>
-      <a href="#"><i class="fab fa-instagram"></i></a>
-      <a href="#"><i class="fab fa-twitter"></i></a>
-    </div>
-  </div>
-
-  <div>
-    <h3>Newsletter</h3>
-    <p>Subscribe for updates and promotions:</p>
-    <div class="newsletter">
-      <input type="email" placeholder="Your email">
-      <button>Subscribe</button>
-    </div>
-  </div>
-</footer>
 
 <script>
 // CART AND CHECKOUT SCRIPT
 let cart = JSON.parse(localStorage.getItem("cart") || "[]");
 
-const cartSidebar = document.getElementById("cart-sidebar");
 const notify = document.getElementById("notify");
-const cartCount = document.getElementById("cart-count");
-const cartItemsContainer = document.getElementById("cart-items");
-const totalEl = document.getElementById("total");
 const checkoutItems = document.getElementById("checkout-items");
 const checkoutTotal = document.getElementById("checkout-total");
-
-function updateCartCount(){ cartCount.textContent = cart.length; }
 
 function showNotification(message){
   notify.textContent = message;
   notify.style.display="block";
-  setTimeout(()=>{notify.style.display="none";},2000);
-}
-
-document.getElementById("open-cart").addEventListener("click",()=>{ cartSidebar.style.right="0"; renderCart(); });
-document.getElementById("close-cart").addEventListener("click",()=>{ cartSidebar.style.right="-400px"; });
-
-function renderCart(){
-  cartItemsContainer.innerHTML="";
-  let total=0;
-  cart.forEach((item,index)=>{
-    total+=item.price;
-    const div=document.createElement("div");
-    div.classList.add("cart-item");
-    div.innerHTML=`
-      <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
-      <span>${item.name} - $${item.price}</span>
-      <button>&times;</button>
-    `;
-    div.querySelector("button").addEventListener("click",()=>{
-      cart.splice(index,1);
-      localStorage.setItem("cart",JSON.stringify(cart));
-      renderCart();
-      renderCheckout();
-      updateCartCount();
-    });
-    cartItemsContainer.appendChild(div);
-  });
-  totalEl.textContent=total.toFixed(2);
+  setTimeout(()=>{notify.style.display="none";},3000);
 }
 
 function renderCheckout(){
   checkoutItems.innerHTML="";
   let total=0;
   cart.forEach(item=>{
-    total+=item.price;
+    total += item.price * item.qty;
     const div=document.createElement("div");
     div.classList.add("checkout-item");
     div.innerHTML=`
       <img src="${item.image || 'https://picsum.photos/seed/1/60/60'}" alt="${item.name}">
-      <span>${item.name} - $${item.price}</span>
+      <div class="checkout-item-details">
+        <h3>${item.name}</h3>
+        <p>Quantity: ${item.qty} | Price: $${item.price} each</p>
+      </div>
+      <div style="font-weight: bold; color: #5a3e2b;">$${(item.price * item.qty).toFixed(2)}</div>
     `;
     checkoutItems.appendChild(div);
   });
@@ -192,7 +262,10 @@ function renderCheckout(){
 // PLACE ORDER
 document.getElementById("checkout-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if (cart.length === 0) { showNotification("Cart is empty!"); return; }
+  if (cart.length === 0) {
+    showNotification("Your cart is empty!");
+    return;
+  }
 
   const formData = new FormData(e.target);
   const orderData = {
@@ -210,14 +283,12 @@ document.getElementById("checkout-form").addEventListener("submit", async (e) =>
     });
 
     if (response.ok) {
-      showNotification("Order placed successfully!");
+      showNotification("Order placed successfully! Redirecting...");
       cart = [];
       localStorage.setItem("cart", JSON.stringify(cart));
-      renderCart();
-      renderCheckout();
-      e.target.reset();
-      // Redirect to success page
-      window.location.href = '/success';
+      setTimeout(() => {
+        window.location.href = '/success';
+      }, 2000);
     } else {
       showNotification("Error placing order. Please try again.");
     }
@@ -227,8 +298,6 @@ document.getElementById("checkout-form").addEventListener("submit", async (e) =>
   }
 });
 
-updateCartCount();
-renderCart();
 renderCheckout();
 </script>
 
