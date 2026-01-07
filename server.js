@@ -12,9 +12,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.static("public"));
 
-// MongoDB Atlas
-mongoose.connect(process.env.MONGO_URI)
-  .then(()=> console.log("MongoDB Atlas connected ✅"))
+// MongoDB Local
+mongoose.connect('mongodb://localhost:27017/art-store')
+  .then(()=> console.log("MongoDB Local connected ✅"))
   .catch(err=> console.error(err));
 
 // Routes
@@ -34,7 +34,7 @@ const client = twilio(process.env.TWILIO_SID, process.env.TWILIO_AUTH_TOKEN);
 app.post("/place-order", async (req,res)=>{
   try {
     const { name, phone, address, cartData } = req.body;
-    const items = JSON.parse(cartData || "[]");
+    const items = JSON.parse(cartData || "[]").map(item => ({ ...item, qty: item.qty || 1 }));
     const total = items.reduce((a,b)=> a+b.price*b.qty,0);
     const order = new Order({ customer:{name, phone, address}, items, total });
     await order.save();
