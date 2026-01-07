@@ -18,6 +18,7 @@ mongoose.connect(process.env.MONGO_URI)
 
 // Routes
 app.use("/admin", adminRoutes);
+app.use("/api/orders", require("./routes/orderRoutes"));
 
 // PUBLIC VIEWS
 app.get("/", async (req,res)=>{
