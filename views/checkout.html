@@ -190,27 +190,41 @@ function renderCheckout(){
 }
 
 // PLACE ORDER
-document.getElementById("checkout-form").addEventListener("submit",(e)=>{
+document.getElementById("checkout-form").addEventListener("submit", async (e) => {
   e.preventDefault();
-  if(cart.length===0){ showNotification("Cart is empty!"); return; }
+  if (cart.length === 0) { showNotification("Cart is empty!"); return; }
 
-  // Dummy confirmation (replace with backend later)
   const formData = new FormData(e.target);
-  const order = {
-    items: cart,
+  const orderData = {
     name: formData.get("name"),
     address: formData.get("address"),
     phone: formData.get("phone"),
-    notes: formData.get("notes"),
-    total: checkoutTotal.textContent
+    cartData: JSON.stringify(cart)
   };
-  console.log("Order Placed:", order);
-  showNotification("Order placed successfully!");
-  cart=[];
-  localStorage.setItem("cart", JSON.stringify(cart));
-  renderCart();
-  renderCheckout();
-  e.target.reset();
+
+  try {
+    const response = await fetch('/place-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams(orderData)
+    });
+
+    if (response.ok) {
+      showNotification("Order placed successfully!");
+      cart = [];
+      localStorage.setItem("cart", JSON.stringify(cart));
+      renderCart();
+      renderCheckout();
+      e.target.reset();
+      // Redirect to success page
+      window.location.href = '/success';
+    } else {
+      showNotification("Error placing order. Please try again.");
+    }
+  } catch (error) {
+    console.error('Error:', error);
+    showNotification("Error placing order. Please try again.");
+  }
 });
 
 updateCartCount();
